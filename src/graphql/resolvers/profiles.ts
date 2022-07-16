@@ -8,7 +8,7 @@ import { valueAsString } from "@/utils/form";
 
 import { getUser } from "@/services/server/auth";
 
-export async function getProfile(req: NextApiRequest) {
+export const getProfile = async (req: NextApiRequest) => {
   const user = await getUser(req);
 
   const data = await db.user.findUnique({ where: { id: user.id } });
@@ -24,9 +24,9 @@ export async function getProfile(req: NextApiRequest) {
   };
 
   return res;
-}
+};
 
-export async function updateProfile(req: NextApiRequest, args: RequireFields<MutationUpdateProfileArgs, "input">) {
+export const updateProfile = async (req: NextApiRequest, args: RequireFields<MutationUpdateProfileArgs, "input">) => {
   const user = await getUser(req);
 
   const data = await db.user.update({
@@ -48,4 +48,4 @@ export async function updateProfile(req: NextApiRequest, args: RequireFields<Mut
   };
 
   return res;
-}
+};

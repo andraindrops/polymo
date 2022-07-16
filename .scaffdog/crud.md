@@ -486,7 +486,7 @@ import { db } from "@/libs/db";
 
 import { getUser } from "@/services/server/auth";
 
-export async function get{{ inputs.name | plur | pascal }}(req: NextApiRequest) {
+export const get{{ inputs.name | plur | pascal }} = async (req: NextApiRequest) => {
   const user = await getUser(req);
 
   const data = await db.{{ inputs.name }}.findMany({ where: { userId: user.id } });
@@ -506,10 +506,10 @@ export async function get{{ inputs.name | plur | pascal }}(req: NextApiRequest) 
   return res;
 }
 
-export async function get{{ inputs.name | pascal }}(
+export const get{{ inputs.name | pascal }} = async (
   req: NextApiRequest,
   args: RequireFields<QueryGet{{ inputs.name | pascal }}Args, "id">
-) {
+) => {
   const user = await getUser(req);
 
   const findData = await db.{{ inputs.name }}.findUnique({ where: { id: args.id } });
@@ -527,10 +527,10 @@ export async function get{{ inputs.name | pascal }}(
   return res;
 }
 
-export async function create{{ inputs.name | pascal }}(
+export const create{{ inputs.name | pascal }} = async (
   req: NextApiRequest,
   args: RequireFields<MutationCreate{{ inputs.name | pascal }}Args, "input">
-) {
+) => {
   const user = await getUser(req);
 
   const findData = await db.{{ inputs.name }}.create({
@@ -549,10 +549,10 @@ export async function create{{ inputs.name | pascal }}(
   return res;
 }
 
-export async function update{{ inputs.name | pascal }}(
+export const update{{ inputs.name | pascal }} = async (
   req: NextApiRequest,
   args: RequireFields<MutationUpdate{{ inputs.name | pascal }}Args, "id" | "input">
-) {
+) => {
   const user = await getUser(req);
 
   const targetData = await db.{{ inputs.name }}.findUnique({ where: { id: args.id } });
@@ -582,10 +582,10 @@ export async function update{{ inputs.name | pascal }}(
   return res;
 }
 
-export async function delete{{ inputs.name | pascal }}(
+export const delete{{ inputs.name | pascal }} = async (
   req: NextApiRequest,
   args: RequireFields<MutationDelete{{ inputs.name | pascal }}Args, "id">
-) {
+) => {
   const user = await getUser(req);
 
   const targetData = await db.{{ inputs.name }}.findUnique({ where: { id: args.id } });

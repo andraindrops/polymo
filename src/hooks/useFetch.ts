@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import useSWRImmutable from "swr";
 import { v4 as uuid } from "uuid";
 
-export function useFetch<T>(fetcher: () => Promise<T>): T | undefined {
+export const useFetch = <T>(fetcher: () => Promise<T>): T | undefined => {
   const key = useMemo(() => uuid(), []); // Do not use cache
 
   const { data, error } = useSWRImmutable<T>(key, async () => {
@@ -16,4 +16,4 @@ export function useFetch<T>(fetcher: () => Promise<T>): T | undefined {
   }
 
   return data;
-}
+};

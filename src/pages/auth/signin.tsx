@@ -4,10 +4,10 @@ import Page from "@/components/page/auth/signin";
 
 export default Page;
 
-export async function getServerSideProps() {
+export const getServerSideProps = async () => {
   const providers = await getProviders();
 
   return {
     props: { providers },
   };
-}
+};
