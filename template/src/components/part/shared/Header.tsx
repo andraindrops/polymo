@@ -17,7 +17,7 @@ export const Header = (props: Props) => {
     <div className="bg-base-200">
       <div className="mx-auto flex max-w-screen-sm justify-between p-4">
         <div className="text-2xl font-bold">
-          <Link href="/">Polymo</Link>
+          <Link href="/">Example</Link>
         </div>
         <div>Hi, {session != null ? <Link href="/settings">You</Link> : <Link href="/auth/signin">{t.part.auth.signIn.action}</Link>}</div>
       </div>

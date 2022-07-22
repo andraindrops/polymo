@@ -22,13 +22,13 @@ const App = ({ Component, pageProps: { session, ...pageProps } }: AppPropsWithLa
   return getLayout(
     <SessionProvider session={session}>
       <Head>
-        <title>Polymo — Boilerplate and CRUD scaffolding for Next.js</title>
-        <meta property="og:url" content="https://polymo.dev" />
+        <title>Example — description</title>
+        <meta property="og:url" content="https://example.com/" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Polymo" />
-        <meta property="og:description" content="Polymo is a simple boilerplate and CRUD scaffolding for Next.js with TypeScript." />
-        <meta property="og:site_name" content="Polymo" />
-        <meta property="og:image" content="https://polymo.dev/favicon.ico" />
+        <meta property="og:title" content="Example" />
+        <meta property="og:description" content="Example description" />
+        <meta property="og:site_name" content="Example" />
+        <meta property="og:image" content="https://example.com/favicon.ico" />
       </Head>
       <Component {...pageProps} />
     </SessionProvider>

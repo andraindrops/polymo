@@ -1,0 +1,113 @@
+{
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier", "plugin:import/errors", "plugin:tailwindcss/recommended"],
+  "rules": {
+    "tailwindcss/no-custom-classname": "off",
+    "react/jsx-props-no-spreading": "off",
+    "import/prefer-default-export": "off",
+    "@next/next/no-img-element": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", ["parent", "sibling"], "object", "type", "index"],
+        "pathGroups": [
+          {
+            "pattern": "{react,react/**,react-dom/**}",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "{next,next/**}",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "{next-auth,next-auth/**}",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "{apollo-server-micro,graphql-request,react-hook-form,react-toastify,swr,uuid,validator,validator/**}",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "@/graphql/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/libs/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/utils/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/services/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/locales/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/hooks/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/components/layout/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/components/ui/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/components/page/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/components/part/**",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "@/styles/*.css",
+            "group": "index",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "alphabetize": { "order": "asc" },
+        "newlines-between": "always"
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*.stories.tsx"],
+      "rules": {
+        "import/no-anonymous-default-export": "off"
+      }
+    }
+  ]
+}

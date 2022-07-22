@@ -1,51 +1,21 @@
-This is a [Polymo](https://polymo.dev).
-<br>
-Polymo is a web app boilerplate and CRUD scaffolding for Next.js with TypeScript.
+# Polymo
+
+Polymo is a web app code base generator for development x10 faster.
 
 ## Getting Started
 
-### 1. Get Polymo from GitHub
-
 ```
-curl -L https://github.com/andraindrops/polymo/archive/refs/tags/0.0.1.tar.gz | tar xvf -
+npx create-polymo-app APP_NAME
 ```
 
-### 2. Setup env files
-
 ```
-# .env
-
-DATABASE_URL="mysql://root:root@localhost:3306/db"
-NEXT_PUBLIC_BASE_URL="http://localhost:3000"
-NEXT_PUBLIC_GRAPHQL_ENDPOINT="http://localhost:3000/api/graphql"
-NEXTAUTH_SECRET="SET YOUR SECRET PHRASE"
-GITHUB_ID="SET YOUR GITHUB ID for OAuth Sign in / up"
-GITHUB_SECRET="SET YOUR GITHUB_SECRET for OAuth Sign in / up"
+cd APP_NAME
 ```
 
-How to get GitHub ID and Secret code?
-<br>
-[Basics of authentication - GitHub Docs](https://docs.github.com/en/rest/guides/basics-of-authentication).
-<br>
-<br>
-Homepage URL:
-<br>
-`http://localhost:3000`
-<br>
-<br>
-Callback URL:
-<br>
-`http://localhost:3000/api/auth/callback`
-<br>
-<br>
-Webhook:
-<br>
-Off Active
-
-### 3. Setup database
+## Setup a database
 
 ```
-docker-compose up
+docker-compose up -d
 ```
 
 We needs [Docker](https://docs.docker.com/get-started/).
@@ -54,24 +24,27 @@ We needs [Docker](https://docs.docker.com/get-started/).
 npx prisma db push
 ```
 
-### 4. Start server
+## Setup a web app
 
 ```
 npm install
 npm run dev
 ```
 
-Please show your web app.
+Check page.
 <br>
 [http://localhost:3000](http://localhost:3000)
 
-### 5. Sign up / in this wep app with GitHub oAuth
+## Sign in / up with email magic link
 
-Please sign up / in with GitHub oAuth.
-<br>
 [http://localhost:3000/auth/signin](http://localhost:3000/auth/signin)
+<br>
+<br>
+A magic link for Sign In / Up can be found at MailDev.
+<br>
+[http://localhost:1080/#/](http://localhost:1080/#/)
 
-### 6. Generate CRUD code
+## Generate CRUD code
 
 ```
 npm run crud
@@ -87,15 +60,18 @@ Please enter a model name. todo
 Please enter attributes. title:string,priority:number
 ```
 
-### 7. Migrate database schemas
+### Generate CRUD code : Migrate database schemas
 
 ```
 npx prisma db push
 ```
 
-### 8. Check CRUD page
+### Generate CRUD code : Check CRUD page
 
-Please restart app and show your CRUD page.
+Please restart an app server.
+<br>
+<br>
+Check page.
 <br>
 [http://localhost:3000/todos](http://localhost:3000/todos)
 
