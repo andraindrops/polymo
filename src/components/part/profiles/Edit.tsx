@@ -27,8 +27,8 @@ export const Edit = (props: Props) => {
   return (
     <Form onSubmit={form.handleSubmit(updateHandler)}>
       <Stack>
-        <FormInput t={t} form={form} name="name" type="text" label={"name"} required />
-        <FormInput t={t} form={form} name="image" type="text" label={"image"} required={false} />
+        <FormInput t={t} form={form} name="name" type="text" label="name" required />
+        <FormInput t={t} form={form} name="image" type="text" label="image" required={false} />
         <button type="submit" className="btn btn-primary btn-block" disabled={form.formState.isSubmitting}>
           {t.update.action}
         </button>

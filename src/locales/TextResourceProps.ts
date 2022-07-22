@@ -42,30 +42,26 @@ export interface TextResourceProps {
       signIn: {
         title: string;
       };
-      setting: {
+    };
+    settings: {
+      title: string;
+    };
+  };
+  part: {
+    auth: {
+      signIn: {
         title: string;
+        action: string;
+      };
+      signOut: {
+        title: string;
+        action: string;
       };
     };
     profiles: {
       edit: {
         title: string;
       };
-    };
-  };
-  part: {
-    auth: {
-      signOut: {
-        title: string;
-        action: string;
-      };
-      signIn: {
-        action: string;
-      };
-    };
-  };
-  model: {
-    auth: {
-      email: string;
     };
   };
 }

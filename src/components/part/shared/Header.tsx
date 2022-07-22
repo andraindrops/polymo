@@ -19,7 +19,7 @@ export const Header = (props: Props) => {
         <div className="text-2xl font-bold">
           <Link href="/">Polymo</Link>
         </div>
-        <div>Hi, {session != null ? <Link href="/profiles/edit">{session.user?.name}</Link> : <Link href="/auth/signin">{t.part.auth.signIn.action}</Link>}</div>
+        <div>Hi, {session != null ? <Link href="/settings">You</Link> : <Link href="/auth/signin">{t.part.auth.signIn.action}</Link>}</div>
       </div>
     </div>
   );

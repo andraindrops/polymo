@@ -41,33 +41,29 @@ export const en: TextResourceProps = {
   },
   page: {
     auth: {
-      setting: {
-        title: "Setting",
-      },
       signIn: {
         title: "Sign In",
       },
     },
-    profiles: {
-      edit: {
-        title: "Setting",
-      },
+    settings: {
+      title: "Settings",
     },
   },
   part: {
     auth: {
+      signIn: {
+        title: "Sign In",
+        action: "Sign In",
+      },
       signOut: {
         title: "Sign Out",
         action: "Sign Out",
       },
-      signIn: {
-        action: "Sign In",
-      },
     },
-  },
-  model: {
-    auth: {
-      email: "Email",
+    profiles: {
+      edit: {
+        title: "Profiles",
+      },
     },
   },
 };

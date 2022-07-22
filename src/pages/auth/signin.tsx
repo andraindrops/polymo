@@ -1,13 +1,3 @@
-import { getProviders } from "next-auth/react";
-
-import Page from "@/components/page/auth/signin";
+import Page from "@/components/page/auth/SignIn";
 
 export default Page;
-
-export const getServerSideProps = async () => {
-  const providers = await getProviders();
-
-  return {
-    props: { providers },
-  };
-};

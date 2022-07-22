@@ -52,7 +52,7 @@ module.exports = {
                 form={form}
                 name="${name}"
                 type="text"
-                label={"${name}"}
+                label="${name}"
                 required
               />`;
 
@@ -65,7 +65,7 @@ module.exports = {
                 form={form}
                 name="${name}"
                 type="number"
-                label={"${name}"}
+                label="${name}"
                 required
                 valueAsNumber
               />`;

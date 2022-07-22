@@ -13,7 +13,7 @@ questions:
 ```ts
 import { requireSignIn } from "@/services/server/auth";
 
-import Page from "@/components/page/{{ inputs.name | plur }}";
+import Page from "@/components/page/{{ inputs.name | plur }}/Index";
 
 export default Page;
 
@@ -25,7 +25,7 @@ export const getServerSideProps = requireSignIn;
 ```ts
 import { requireSignIn } from "@/services/server/auth";
 
-import Page from "@/components/page/{{ inputs.name | plur }}/new";
+import Page from "@/components/page/{{ inputs.name | plur }}/New";
 
 export default Page;
 
@@ -40,7 +40,7 @@ import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { DefaultUser } from "next-auth";
 import { getSession } from "next-auth/react";
 
-import Page from "@/components/page/{{ inputs.name | plur }}/edit";
+import Page from "@/components/page/{{ inputs.name | plur }}/Edit";
 
 export default Page;
 
@@ -76,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async (
 };
 ```
 
-# `src/components/page/{{ inputs.name | plur }}/index.tsx`
+# `src/components/page/{{ inputs.name | plur }}/Index.tsx`
 
 ```ts
 import Link from "next/link";
@@ -104,7 +104,7 @@ const Page = () => {
 
   const { t } = new Locale({ locale: router.locale });
 
-  const data = useFetch<{{ inputs.name | pascal }}[] | null>(async () => {
+  const { data } = useFetch<{{ inputs.name | pascal }}[] | null>(async () => {
     try {
       const query = await graphql.get{{ inputs.name | plur | pascal }}();
       return query.get{{ inputs.name | plur | pascal }};
@@ -136,7 +136,7 @@ const Page = () => {
 export default Page;
 ```
 
-# `src/components/page/{{ inputs.name | plur }}/new.tsx`
+# `src/components/page/{{ inputs.name | plur }}/New.tsx`
 
 ```ts
 import { useRouter } from "next/router";
@@ -180,7 +180,7 @@ const Page = () => {
 export default Page;
 ```
 
-# `src/components/page/{{ inputs.name | plur }}/edit.tsx`
+# `src/components/page/{{ inputs.name | plur }}/Edit.tsx`
 
 ```ts
 import { useRouter } from "next/router";
@@ -233,7 +233,7 @@ const Page = (props: Props) => {
     }
   };
 
-  const data = useFetch<{{ inputs.name | pascal }} | null>(async () => {
+  const { data } = useFetch<{{ inputs.name | pascal }} | null>(async () => {
     try {
       const query = await graphql.get{{ inputs.name | pascal }}({ id });
       return query.get{{ inputs.name | pascal }};

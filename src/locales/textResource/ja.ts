@@ -41,33 +41,29 @@ export const ja: TextResourceProps = {
   },
   page: {
     auth: {
-      setting: {
-        title: "設定",
-      },
       signIn: {
         title: "サインイン",
       },
     },
-    profiles: {
-      edit: {
-        title: "設定",
-      },
+    settings: {
+      title: "設定",
     },
   },
   part: {
     auth: {
-      signOut: {
-        title: "ログアウト",
-        action: "ログアウト",
-      },
       signIn: {
+        title: "サインイン",
         action: "サインイン",
       },
+      signOut: {
+        title: "サインアウト",
+        action: "サインアウト",
+      },
     },
-  },
-  model: {
-    auth: {
-      email: "メールアドレス",
+    profiles: {
+      edit: {
+        title: "プロフィール",
+      },
     },
   },
 };

@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3"
 services:
   db:
     image: mysql:latest
@@ -8,3 +8,11 @@ services:
       MYSQL_DATABASE: db
     ports:
       - "3306:3306"
+  maildev:
+    image: maildev/maildev
+    environment:
+      MAILDEV_OUTGOING_USER: username
+      MAILDEV_OUTGOING_PASS: password
+    ports:
+      - "1080:1080"
+      - "1025:1025"
