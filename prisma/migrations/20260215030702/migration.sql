@@ -1,0 +1,4 @@
+ALTER TABLE "Subscription"
+ADD COLUMN "enterDate" TIMESTAMP(3) NOT NULL,
+ADD COLUMN "leaveDate" TIMESTAMP(3),
+ADD COLUMN "status" TEXT NOT NULL;

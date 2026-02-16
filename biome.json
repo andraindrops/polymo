@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -7,7 +7,18 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.next",
+      "!dist",
+      "!build",
+      "!src/generated",
+      "!src/components/ui",
+      "!playwright",
+      "!playwright-report",
+      "!boilerplate/src"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -20,6 +31,16 @@
       "recommended": true,
       "suspicious": {
         "noUnknownAtRules": "off"
+      },
+      "nursery": {
+        "useSortedClasses": {
+          "level": "warn",
+          "fix": "safe",
+          "options": {
+            "attributes": ["class", "className"],
+            "functions": ["clsx", "cn", "cva"]
+          }
+        }
       }
     },
     "domains": {
@@ -27,10 +48,45 @@
       "react": "recommended"
     }
   },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "assist": {
     "actions": {
       "source": {
-        "organizeImports": "on"
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":NODE:",
+              ":PACKAGE:",
+              ":BLANK_LINE:",
+              "@/lib/**",
+              ":BLANK_LINE:",
+              "@/schemas/**",
+              ":BLANK_LINE:",
+              "@/policies/**",
+              ":BLANK_LINE:",
+              "@/services/shared/**",
+              ":BLANK_LINE:",
+              "@/services/domain/**",
+              ":BLANK_LINE:",
+              "@/actions/**",
+              ":BLANK_LINE:",
+              "@/components/ui/**",
+              ":BLANK_LINE:",
+              "@/components/domain/**",
+              ":BLANK_LINE:",
+              "@/tests/_helpers/**",
+              ":BLANK_LINE:",
+              "@/tests/_fixtures/**",
+              ":BLANK_LINE:",
+              "@/tests/**"
+            ]
+          }
+        }
       }
     }
   }

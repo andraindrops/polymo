@@ -1,6 +1,17 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
+import { ThemeProvider } from "next-themes";
+
+import Tracking from "@/components/shared/tracking";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +34,55 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <div className="m-auto max-w-3xl">
+              <header className="p-8 font-mono">
+                <div className="grid grid-flow-col grid-cols-[auto_1fr]">
+                  {/* <div>
+                    <Link href="/">
+                      <LogoIcon size={32} />
+                    </Link>
+                  </div> */}
+                  <div className="grid grid-flow-col items-center justify-end gap-4">
+                    {/* <div>
+                      <Link href="/examples">Studio</Link>
+                    </div>
+                    <SwitchingTheme /> */}
+                    <div className="flex items-center gap-2">
+                      <SignedOut>
+                        <SignInButton />
+                        <SignUpButton />
+                      </SignedOut>
+                      <SignedIn>
+                        <UserButton />
+                      </SignedIn>
+                    </div>
+                  </div>
+                </div>
+              </header>
+              <div className="p-8 font-mono">{children}</div>
+              {/* <footer className="p-8 font-mono text-xs">
+                <div className="grid grid-flow-col grid-cols-[auto_1fr]">
+                  <div className="grid grid-flow-col gap-4">
+                    <div>
+                      <Link href="#">Privacy Policy</Link>
+                    </div>
+                    <div>
+                      <Link href="#">Terms of Service</Link>
+                    </div>
+                  </div>
+                </div>
+              </footer> */}
+            </div>
+            <Tracking gaId={process.env.NEXT_PUBLIC_GA_ID} />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

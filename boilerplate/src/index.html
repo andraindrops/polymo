@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>[app name]</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script>
+Babel.registerPreset("tsx", {
+  presets: [
+    [Babel.availablePresets["typescript"], { isTSX: true, allExtensions: true }],
+    [Babel.availablePresets["react"]],
+  ],
+});
+</script>
+<style></style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-type="module" data-presets="tsx">
+import { zodResolver } from "https://esm.sh/@hookform/resolvers@3/zod?deps=react@19,react-hook-form@7";
+import React, { useEffect, useState } from "https://esm.sh/react@19";
+import ReactDOM from "https://esm.sh/react-dom@19/client";
+import { useForm } from "https://esm.sh/react-hook-form@7?deps=react@19";
+import { useHashLocation } from "https://esm.sh/wouter@3/use-hash-location?deps=react@19";
+import {
+  Link,
+  Route,
+  Router,
+  Switch,
+  useLocation,
+  useParams,
+} from "https://esm.sh/wouter@3?deps=react@19";
+import { z } from "https://esm.sh/zod@3";
+
+const STORE_NAMES = ["examples"] as const;
+
+type StoreName = (typeof STORE_NAMES)[number];
+
+const memoryStores: Record<
+  string,
+  { records: Map<number, unknown>; nextId: number }
+> = {};
+
+for (const name of STORE_NAMES) {
+  memoryStores[name] = { records: new Map(), nextId: 1 };
+}
+
+type MemoryStore = {
+  findMany: () => unknown[];
+  findById: ({ id }: { id: number }) => unknown | undefined;
+  create: ({ data }: { data: Record<string, unknown> }) => number;
+  update: ({
+    id,
+    data,
+  }: {
+    id: number;
+    data: Record<string, unknown>;
+  }) => number;
+  delete: ({ id }: { id: number }) => void;
+};
+
+function createMemoryStore({ name }: { name: StoreName }): MemoryStore {
+  // biome-ignore lint: guaranteed to exist — initialised for every STORE_NAMES entry
+  const s = memoryStores[name]!;
+  return {
+    findMany: () => Array.from(s.records.values()),
+    findById: ({ id }) => s.records.get(id),
+    create: ({ data }) => {
+      const id = s.nextId++;
+      s.records.set(id, { ...data, id });
+      return id;
+    },
+    update: ({ id, data }) => {
+      s.records.set(id, { ...data, id });
+      return id;
+    },
+    delete: ({ id }) => {
+      s.records.delete(id);
+    },
+  };
+}
+
+function getStore({ name }: { name: StoreName }): MemoryStore {
+  return createMemoryStore({ name });
+}
+
+const zodSchemas = {
+  exampleSchemas: {
+    entity: z.object({
+      id: z.number(),
+      name: z.string().min(1, "Name is required"),
+    }),
+    create: z.object({
+      name: z.string().min(1, "Name is required"),
+    }),
+    update: z.object({
+      name: z.string().min(1, "Name is required"),
+    }),
+  },
+};
+
+type schemas = {
+  exampleSchemas: {
+    entity: z.infer<typeof zodSchemas.exampleSchemas.entity>;
+    create: z.infer<typeof zodSchemas.exampleSchemas.create>;
+    update: z.infer<typeof zodSchemas.exampleSchemas.update>;
+  };
+};
+
+type ExampleEntity = schemas["exampleSchemas"]["entity"];
+
+const actions = {
+  exampleActions: {
+    findMany: async () => {
+      const store = getStore({ name: "examples" });
+      const examples = store.findMany() as ExampleEntity[];
+
+      return {
+        data: {
+          examples,
+        },
+      };
+    },
+
+    findById: async ({ id }: { id: number }) => {
+      const store = getStore({ name: "examples" });
+      const example = store.findById({ id }) as ExampleEntity | undefined;
+
+      return { data: { example } };
+    },
+
+    create: async ({
+      data,
+    }: {
+      data: z.infer<typeof zodSchemas.exampleSchemas.create>;
+    }): Promise<{ id: number }> => {
+      const store = getStore({ name: "examples" });
+      const id = store.create({ data: { ...data } });
+
+      return { id };
+    },
+
+    update: async ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: z.infer<typeof zodSchemas.exampleSchemas.update>;
+    }): Promise<{ id: number }> => {
+      const store = getStore({ name: "examples" });
+      store.update({ id, data: { ...data } });
+
+      return { id };
+    },
+
+    delete: async ({ id }: { id: number }) => {
+      const store = getStore({ name: "examples" });
+      store.delete({ id });
+    },
+  },
+};
+
+const styles = {
+  "btn-default": "rounded-md bg-black px-4 py-2 text-white",
+  "btn-outline": "rounded-md border bg-white px-4 py-2 text-black",
+};
+
+const components = {
+  Loading: () => {
+    return <p>Loading...</p>;
+  },
+  NotFound: () => {
+    return <p>Not found.</p>;
+  },
+  ExampleForm: ({
+    example,
+    onUpdated,
+    onRemoved,
+  }: {
+    example: ExampleEntity;
+    onUpdated: () => void;
+    onRemoved: () => void;
+  }) => {
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+    } = useForm<z.infer<typeof zodSchemas.exampleSchemas.update>>({
+      resolver: zodResolver(zodSchemas.exampleSchemas.update),
+      defaultValues: { name: example.name },
+    });
+
+    const handleUpdate = async ({
+      data,
+    }: {
+      data: z.infer<typeof zodSchemas.exampleSchemas.update>;
+    }) => {
+      await actions.exampleActions.update({ id: example.id, data });
+      onUpdated();
+    };
+
+    const handleRemove = async () => {
+      await actions.exampleActions.delete({ id: example.id });
+      onRemoved();
+    };
+
+    return (
+      <form onSubmit={handleSubmit((data) => handleUpdate({ data }))}>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <div className="space-y-1">
+              <div className="text-xs">Name</div>
+              <div>
+                <input
+                  type="text"
+                  {...register("name")}
+                  className="w-full rounded-md border border-gray-200 p-2 shadow-none"
+                />
+                {errors.name && (
+                  <span className="text-red-500 text-xs">
+                    {errors.name.message}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <button type="submit" className={styles["btn-default"]}>
+              Submit
+            </button>
+            <button
+              type="button"
+              className={styles["btn-outline"]}
+              onClick={handleRemove}
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      </form>
+    );
+  },
+};
+
+const pages = {
+  ExampleListPage: () => {
+    const [, setLocation] = useLocation();
+    const [loading, setLoading] = useState(true);
+
+    const [examples, setExamples] = useState<ExampleEntity[]>([]);
+
+    useEffect(() => {
+      (async () => {
+        const { data } = await actions.exampleActions.findMany();
+
+        setExamples(data.examples);
+
+        setLoading(false);
+      })();
+    }, []);
+
+    const handleCreate = async () => {
+      const { id } = await actions.exampleActions.create({
+        data: { name: "Untitled" },
+      });
+
+      setLocation(`/examples/${id}`);
+    };
+
+    if (loading) {
+      return <components.Loading />;
+    }
+
+    return (
+      <div className="space-y-4">
+        <h2 className="font-bold text-lg">Examples</h2>
+        <div className="space-y-4">
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={handleCreate}
+              className={styles["btn-default"]}
+            >
+              Create
+            </button>
+          </div>
+          {examples.length === 0 ? (
+            <p>No items yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {examples.map((example) => (
+                <div
+                  key={example.id}
+                  className="rounded-md border border-gray-200 p-2 shadow-sm"
+                >
+                  <Link href={`/examples/${example.id}`}>{example.name}</Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  },
+
+  ExampleItemPage: () => {
+    const params = useParams<{ id: string }>();
+    const [, setLocation] = useLocation();
+    const [loading, setLoading] = useState(true);
+
+    const [example, setExample] = useState<ExampleEntity | null>(null);
+
+    const id = Number(params.id);
+
+    useEffect(() => {
+      (async () => {
+        const { data } = await actions.exampleActions.findById({ id });
+
+        setExample(data.example ?? null);
+
+        setLoading(false);
+      })();
+    }, [id]);
+
+    if (loading) {
+      return <components.Loading />;
+    }
+
+    if (example == null) {
+      return <components.NotFound />;
+    }
+
+    return (
+      <div className="space-y-4">
+        <div className="space-y-4">
+          <div className="flex justify-end">
+            <Link href="/" className="text-gray-500 text-sm">
+              Back
+            </Link>
+          </div>
+          <components.ExampleForm
+            example={example}
+            onUpdated={() => setLocation("/")}
+            onRemoved={() => setLocation("/")}
+          />
+        </div>
+      </div>
+    );
+  },
+};
+
+const App = () => {
+  return (
+    <Router hook={useHashLocation}>
+      <div className="container mx-auto my-4 max-w-sm rounded-md border border-gray-200 p-4 font-mono">
+        <header className="border-gray-200 border-b pb-4">
+          <h1 className="text-sm">
+            <Link href="/">[app name]</Link>
+          </h1>
+        </header>
+        <main className="pt-4">
+          <Switch>
+            {/* biome-ignore format: alignment */}
+            <Route path="/"             component={pages.ExampleListPage} />
+            {/* biome-ignore format: alignment */}
+            <Route path="/examples/:id" component={pages.ExampleItemPage} />
+            <Route>
+              <p>404 - Page not found</p>
+            </Route>
+          </Switch>
+        </main>
+      </div>
+    </Router>
+  );
+};
+
+const rootElement = document.getElementById("root");
+
+if (rootElement != null) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(<App />);
+}
+
+</script>
+</body>
+</html>

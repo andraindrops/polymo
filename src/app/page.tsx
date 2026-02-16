@@ -1,65 +1,275 @@
+import { LinkIcon, PenSquareIcon, SettingsIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+
+function SectionHeader({
+  headline,
+  title,
+  description,
+}: {
+  headline: string;
+  title: string;
+  description: string;
+}) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="space-y-2">
+      <div className="text-xs">{headline}</div>
+      <h3 className="font-bold text-xl">{title}</h3>
+      <div>{description}</div>
     </div>
+  );
+}
+
+function FeatureCard({
+  title,
+  description,
+  icon,
+}: {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div className="grid gap-4 rounded-lg bg-foreground p-4 text-primary-foreground">
+      <div className="grid grid-flow-col justify-center">{icon}</div>
+      <div>{title}</div>
+      <div className="text-xs">{description}</div>
+    </div>
+  );
+}
+
+function IntegrationCard({ icon }: { icon: React.ReactNode }) {
+  return (
+    <div className="grid gap-4 rounded-lg p-4">
+      <div className="grid grid-flow-col justify-center">{icon}</div>
+    </div>
+  );
+}
+
+function PlanCard({
+  name,
+  price,
+  features,
+}: {
+  name: string;
+  price: string;
+  features: string[];
+}) {
+  return (
+    <div className="w-fit space-y-8 rounded-lg border border-foreground px-8 py-12">
+      <div className="space-y-2">
+        <div className="font-bold text-xl">{name}</div>
+        <div className="text-lg">{price}</div>
+      </div>
+      <ul className="list-disc pl-4">
+        {features.map((feature, _index) => (
+          <li key={feature}>{feature}</li>
+        ))}
+      </ul>
+      <Button className="rounded-full">Get started today</Button>
+    </div>
+  );
+}
+
+function DeveloperCard({
+  name,
+  title,
+  imageUrl,
+  url,
+}: {
+  name: string;
+  title: string;
+  imageUrl: string;
+  url: string;
+}) {
+  return (
+    <div className="grid w-fit gap-2">
+      <div className="grid grid-flow-col items-center gap-4">
+        <Image
+          src={imageUrl}
+          alt={name}
+          width={64}
+          height={64}
+          className="rounded-full"
+          unoptimized
+        />
+        <div className="space-y-2">
+          <div>
+            <div className="font-bold">{name}</div>
+            <div className="text-xs">{title}</div>
+          </div>
+          <div>
+            <Link href={url} target="_blank" rel="noopener noreferrer">
+              <LinkIcon size={12} />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <main className="space-y-16 py-16">
+      <section className="space-y-8">
+        <h1 className="font-bold text-4xl">
+          Example is a awesome product for life and work
+        </h1>
+        <h2 className="font-bold">I like to build and learn new things</h2>
+      </section>
+      <section>
+        <Image
+          src="/images/example.svg"
+          alt="A product image"
+          width={1024}
+          height={768}
+          className="rounded-lg"
+          unoptimized
+        />
+      </section>
+      <section className="space-y-8">
+        <SectionHeader
+          headline="Features"
+          title="Features - title"
+          description="Features - description"
+        />
+        <div className="grid grid-cols-3 grid-rows-2 gap-4">
+          <FeatureCard
+            title="Feature 1"
+            description="Description of feature 1."
+            icon={<SettingsIcon />}
+          />
+          <FeatureCard
+            title="Feature 2"
+            description="Description of feature 2."
+            icon={<SettingsIcon />}
+          />
+          <FeatureCard
+            title="Feature 3"
+            description="Description of feature 3."
+            icon={<SettingsIcon />}
+          />
+          <FeatureCard
+            title="Feature 4"
+            description="Description of feature 4."
+            icon={<SettingsIcon />}
+          />
+          <FeatureCard
+            title="Feature 5"
+            description="Description of feature 5."
+            icon={<SettingsIcon />}
+          />
+          <FeatureCard
+            title="Feature 6"
+            description="Description of feature 6."
+            icon={<SettingsIcon />}
+          />
+        </div>
+      </section>
+      <section className="space-y-8">
+        <SectionHeader
+          headline="Feature spotlight"
+          title="Feature spotlight - title"
+          description="Feature spotlight - description"
+        />
+        <div>
+          <Image
+            src="/images/example.svg"
+            alt="A feature spotlight image"
+            width={1024}
+            height={768}
+            className="rounded-lg"
+            unoptimized
+          />
+        </div>
+      </section>
+      <section className="space-y-8">
+        <SectionHeader
+          headline="Integrations"
+          title="Integrations - title"
+          description="Integrations - description"
+        />
+        <div className="grid grid-cols-4 grid-rows-3 gap-4">
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+          <IntegrationCard icon={<PenSquareIcon size={16} />} />
+        </div>
+      </section>
+      <section className="space-y-8">
+        <SectionHeader
+          headline="Pricing"
+          title="Pricing - title"
+          description="Pricing - description"
+        />
+        <div className="grid grid-flow-col justify-center gap-4">
+          <PlanCard
+            name="Free Plan"
+            price="Free"
+            features={["Feature 1", "Feature 2", "Feature 3"]}
+          />
+          <PlanCard
+            name="Free Plan"
+            price="Free"
+            features={["Feature 1", "Feature 2", "Feature 3"]}
+          />
+        </div>
+      </section>
+      <section className="space-y-8">
+        <SectionHeader
+          headline="FAQ"
+          title="FAQ - title"
+          description="FAQ - description"
+        />
+        <div>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="faq-1">
+              <AccordionTrigger>Question 1</AccordionTrigger>
+              <AccordionContent>Answer to question 1.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq-2">
+              <AccordionTrigger>Question 2</AccordionTrigger>
+              <AccordionContent>Answer to question 2.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq-3">
+              <AccordionTrigger>Question 3</AccordionTrigger>
+              <AccordionContent>Answer to question 3.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </section>
+      <section className="space-y-8">
+        <SectionHeader
+          headline="About us"
+          title="About us - title"
+          description="About us - description"
+        />
+        <div className="grid justify-center gap-4">
+          <DeveloperCard
+            imageUrl="/images/example-icon.svg"
+            name="[example]"
+            title="Product Engineer"
+            url="https://example.com/"
+          />
+        </div>
+      </section>
+    </main>
   );
 }
