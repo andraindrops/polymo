@@ -9,6 +9,18 @@ dotenv.config({ path: ".env.test" });
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
   test: {
+    coverage: {
+      provider: "v8",
+      include: ["src/**/*.{js,jsx,ts,tsx}"],
+      exclude: [
+        "**/*.d.ts",
+        "**/*.{test,spec}.{js,jsx,ts,tsx}",
+        "**/node_modules/**",
+        "**/.next/**",
+        "**/generated/**",
+        "**/components/ui/**",
+      ],
+    },
     projects: [
       {
         extends: true,
