@@ -11,7 +11,6 @@ export default function Page({ productId }: { productId: string }) {
   const [input, setInput] = useState("Can you build a minimal Todo app?");
   const [route] = useState<string>("/api/apply");
   const [iframeKey, setIframeKey] = useState(0);
-  const [hasGenerated, setHasGenerated] = useState(false);
   const prevStatusRef = useRef<string | undefined>(undefined);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +24,6 @@ export default function Page({ productId }: { productId: string }) {
 
   useEffect(() => {
     if (prevStatusRef.current === "streaming" && status === "ready") {
-      setHasGenerated(true);
       setIframeKey((k) => k + 1);
     }
     prevStatusRef.current = status;
@@ -41,15 +39,13 @@ export default function Page({ productId }: { productId: string }) {
       <div className="mx-auto grid h-[512px] w-[512px] items-center justify-center border">
         {isLoading ? (
           <div className="text-gray-500">🍞</div>
-        ) : hasGenerated ? (
+        ) : (
           <iframe
             key={iframeKey}
             src={`/api/products/${productId}/preview`}
             className="h-full w-full"
             title="Product Preview"
           />
-        ) : (
-          <div className="text-gray-400">🤖</div>
         )}
       </div>
       <div className="space-y-4 rounded-2xl border py-8">
