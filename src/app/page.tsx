@@ -1,6 +1,7 @@
-import { LinkIcon, PenSquareIcon, SettingsIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
+import { Check } from "lucide-react";
+
+import * as subscriptionService from "@/services/domain/subscription";
 
 import {
   Accordion,
@@ -9,267 +10,134 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-function SectionHeader({
-  headline,
-  title,
-  description,
-}: {
-  headline: string;
-  title: string;
-  description: string;
-}) {
+import StudioForm from "@/components/domain/product/studio/form";
+
+import SubscriptionGuard from "@/components/shared/subscriptionGuard";
+
+const FAQ_ITEMS = [
+  {
+    question: "What is Polymo good at?",
+    answer:
+      "Polymo is great at building simple and stable demo apps using boilerplates and guardrails. For further development, it is designed to be used with AI Coding Agents from other companies. Unlike tools like v0 or Lovable, it is not intended for long-term product dev or ops.",
+  },
+  {
+    question: "What is a single-page HTML web app?",
+    answer:
+      "It creates a web app using only one HTML file. It uses technologies like TypeScript, React, Zod, Tailwind CSS, React Hook Form, and Wouter.",
+  },
+  {
+    question: "Can I get a refund?",
+    answer:
+      "We accept refund requests for the current month for any reason. Please contact us at dev@andraindrops.dev.",
+  },
+];
+
+const PLAN_FEATURES = [
+  "100 monthly credits",
+  "Unlimited apps",
+  "Anytime refundable subscription",
+];
+
+export default async function Page() {
+  const { userId } = await auth();
+
+  if (userId == null) {
+    return (
+      <>
+        <section className="mx-auto max-w-md px-8 py-16">
+          <StudioForm isAuthenticated={false} />
+        </section>
+        <div className="bg-[#25343F] text-white">
+          <div className="mx-auto max-w-md space-y-16 px-8 py-16">
+            <HiSection />
+            <PricingSection />
+            <FaqSection />
+          </div>
+        </div>
+      </>
+    );
+  } else {
+    const subscription = await subscriptionService.findActiveByUserId({
+      userId,
+    });
+
+    return (
+      <>
+        <SubscriptionGuard />
+        <section className="mx-auto max-w-md px-8 py-16">
+          <StudioForm hasSubscription={subscription != null} />
+        </section>
+        <div className="bg-[#25343F] text-white">
+          <div className="mx-auto max-w-md space-y-16 px-8 py-16">
+            <HiSection />
+            <PricingSection />
+            <FaqSection />
+          </div>
+        </div>
+      </>
+    );
+  }
+}
+
+function HiSection() {
   return (
-    <div className="space-y-2">
-      <div className="text-xs">{headline}</div>
-      <h3 className="font-bold text-xl">{title}</h3>
-      <div>{description}</div>
-    </div>
+    <section className="space-y-4">
+      <h2 className="font-bold text-2xl">Hi</h2>
+      <p className="text-justify text-white/80 leading-relaxed">
+        Polymo is a vibe-coding tool - building a single-page HTML web app with
+        simple and stable the boilerplate code.
+      </p>
+    </section>
   );
 }
 
-function FeatureCard({
-  title,
-  description,
-  icon,
-}: {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-}) {
+function PricingSection() {
   return (
-    <div className="grid gap-4 rounded-lg bg-foreground p-4 text-primary-foreground">
-      <div className="grid grid-flow-col justify-center">{icon}</div>
-      <div>{title}</div>
-      <div className="text-xs">{description}</div>
-    </div>
+    <section className="space-y-4">
+      <h2 className="font-bold text-2xl">Pricing</h2>
+      <Card className="bg-white text-[#25343F]">
+        <CardHeader>
+          <CardTitle className="text-center">
+            <div className="font-bold text-4xl">$20</div>
+            <div className="text-[#25343F]/60 text-sm">/month</div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <ul className="space-y-2 text-sm">
+            {PLAN_FEATURES.map((feature) => (
+              <li key={feature} className="flex items-center gap-2">
+                <Check className="size-4 shrink-0" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+          <Button className="w-full bg-[#25343F] text-white hover:bg-[#25343F]/90">
+            Get Started
+          </Button>
+        </CardContent>
+      </Card>
+    </section>
   );
 }
 
-function IntegrationCard({ icon }: { icon: React.ReactNode }) {
+function FaqSection() {
   return (
-    <div className="grid gap-4 rounded-lg p-4">
-      <div className="grid grid-flow-col justify-center">{icon}</div>
-    </div>
-  );
-}
-
-function PlanCard({
-  name,
-  price,
-  features,
-}: {
-  name: string;
-  price: string;
-  features: string[];
-}) {
-  return (
-    <div className="w-fit space-y-8 rounded-lg border border-foreground px-8 py-12">
-      <div className="space-y-2">
-        <div className="font-bold text-xl">{name}</div>
-        <div className="text-lg">{price}</div>
-      </div>
-      <ul className="list-disc pl-4">
-        {features.map((feature, _index) => (
-          <li key={feature}>{feature}</li>
+    <section className="space-y-4">
+      <h2 className="font-bold text-2xl">Frequently Asked Questions</h2>
+      <Accordion type="single" collapsible>
+        {FAQ_ITEMS.map((item, index) => (
+          <AccordionItem
+            key={item.question}
+            value={`item-${index}`}
+            className="border-white/20 text-justify"
+          >
+            <AccordionTrigger>{item.question}</AccordionTrigger>
+            <AccordionContent>{item.answer}</AccordionContent>
+          </AccordionItem>
         ))}
-      </ul>
-      <Button className="rounded-full">Get started today</Button>
-    </div>
-  );
-}
-
-function DeveloperCard({
-  name,
-  title,
-  imageUrl,
-  url,
-}: {
-  name: string;
-  title: string;
-  imageUrl: string;
-  url: string;
-}) {
-  return (
-    <div className="grid w-fit gap-2">
-      <div className="grid grid-flow-col items-center gap-4">
-        <Image
-          src={imageUrl}
-          alt={name}
-          width={64}
-          height={64}
-          className="rounded-full"
-          unoptimized
-        />
-        <div className="space-y-2">
-          <div>
-            <div className="font-bold">{name}</div>
-            <div className="text-xs">{title}</div>
-          </div>
-          <div>
-            <Link href={url} target="_blank" rel="noopener noreferrer">
-              <LinkIcon size={12} />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function Page() {
-  return (
-    <main className="space-y-16 py-16">
-      <section className="space-y-8">
-        <h1 className="font-bold text-4xl">
-          Example is a awesome product for life and work
-        </h1>
-        <h2 className="font-bold">I like to build and learn new things</h2>
-      </section>
-      <section>
-        <Image
-          src="/images/example.svg"
-          alt="A product image"
-          width={1024}
-          height={768}
-          className="rounded-lg"
-          unoptimized
-        />
-      </section>
-      <section className="space-y-8">
-        <SectionHeader
-          headline="Features"
-          title="Features - title"
-          description="Features - description"
-        />
-        <div className="grid grid-cols-3 grid-rows-2 gap-4">
-          <FeatureCard
-            title="Feature 1"
-            description="Description of feature 1."
-            icon={<SettingsIcon />}
-          />
-          <FeatureCard
-            title="Feature 2"
-            description="Description of feature 2."
-            icon={<SettingsIcon />}
-          />
-          <FeatureCard
-            title="Feature 3"
-            description="Description of feature 3."
-            icon={<SettingsIcon />}
-          />
-          <FeatureCard
-            title="Feature 4"
-            description="Description of feature 4."
-            icon={<SettingsIcon />}
-          />
-          <FeatureCard
-            title="Feature 5"
-            description="Description of feature 5."
-            icon={<SettingsIcon />}
-          />
-          <FeatureCard
-            title="Feature 6"
-            description="Description of feature 6."
-            icon={<SettingsIcon />}
-          />
-        </div>
-      </section>
-      <section className="space-y-8">
-        <SectionHeader
-          headline="Feature spotlight"
-          title="Feature spotlight - title"
-          description="Feature spotlight - description"
-        />
-        <div>
-          <Image
-            src="/images/example.svg"
-            alt="A feature spotlight image"
-            width={1024}
-            height={768}
-            className="rounded-lg"
-            unoptimized
-          />
-        </div>
-      </section>
-      <section className="space-y-8">
-        <SectionHeader
-          headline="Integrations"
-          title="Integrations - title"
-          description="Integrations - description"
-        />
-        <div className="grid grid-cols-4 grid-rows-3 gap-4">
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-          <IntegrationCard icon={<PenSquareIcon size={16} />} />
-        </div>
-      </section>
-      <section className="space-y-8">
-        <SectionHeader
-          headline="Pricing"
-          title="Pricing - title"
-          description="Pricing - description"
-        />
-        <div className="grid grid-flow-col justify-center gap-4">
-          <PlanCard
-            name="Free Plan"
-            price="Free"
-            features={["Feature 1", "Feature 2", "Feature 3"]}
-          />
-          <PlanCard
-            name="Free Plan"
-            price="Free"
-            features={["Feature 1", "Feature 2", "Feature 3"]}
-          />
-        </div>
-      </section>
-      <section className="space-y-8">
-        <SectionHeader
-          headline="FAQ"
-          title="FAQ - title"
-          description="FAQ - description"
-        />
-        <div>
-          <Accordion type="single" collapsible>
-            <AccordionItem value="faq-1">
-              <AccordionTrigger>Question 1</AccordionTrigger>
-              <AccordionContent>Answer to question 1.</AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="faq-2">
-              <AccordionTrigger>Question 2</AccordionTrigger>
-              <AccordionContent>Answer to question 2.</AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="faq-3">
-              <AccordionTrigger>Question 3</AccordionTrigger>
-              <AccordionContent>Answer to question 3.</AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-      </section>
-      <section className="space-y-8">
-        <SectionHeader
-          headline="About us"
-          title="About us - title"
-          description="About us - description"
-        />
-        <div className="grid justify-center gap-4">
-          <DeveloperCard
-            imageUrl="/images/example-icon.svg"
-            name="[example]"
-            title="Product Engineer"
-            url="https://example.com/"
-          />
-        </div>
-      </section>
-    </main>
+      </Accordion>
+    </section>
   );
 }

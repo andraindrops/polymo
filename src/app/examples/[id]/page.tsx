@@ -16,10 +16,10 @@ export default async function Page({
   });
 
   return (
-    <>
+    <div className="mx-auto max-w-md px-8">
       <SubscriptionGuard />
       <ExampleForm example={example} />
-    </>
+    </div>
   );
 }
 

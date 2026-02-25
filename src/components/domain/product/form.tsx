@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
@@ -29,8 +28,6 @@ export default function Component({
   product: productSchema.entitySchema;
   className?: string;
 } & React.HTMLAttributes<HTMLDivElement>) {
-  const router = useRouter();
-
   const handleRemove = async () => {
     if (product?.id == null) return;
 
@@ -39,21 +36,17 @@ export default function Component({
     });
 
     console.log("Product removed:", result);
-
-    router.push("/products");
   };
 
   const handleSubmit = async ({
     data,
   }: {
-    data: productSchema.createSchema;
+    data: productSchema.updateSchema;
   }) => {
     const result = await productAction.update({
       id: product.id,
       data: {
         name: data.name,
-        body: data.body,
-        spec: data.spec,
       },
     });
 
@@ -62,12 +55,10 @@ export default function Component({
     form.reset({}, { keepValues: true });
   };
 
-  const form = useForm<productSchema.createSchema>({
-    resolver: zodResolver(productSchema.createZodSchema),
+  const form = useForm<productSchema.updateSchema>({
+    resolver: zodResolver(productSchema.updateZodSchema),
     defaultValues: {
       name: product?.name ?? "",
-      body: product?.body ?? "",
-      spec: product?.spec ?? "",
     },
   });
 
@@ -100,40 +91,6 @@ export default function Component({
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="body"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Body</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    className="w-full"
-                    data-testid="product-body-input"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="spec"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Spec</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    className="w-full"
-                    data-testid="product-spec-input"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <Button
             type="submit"
             className="w-full"
@@ -143,7 +100,8 @@ export default function Component({
           </Button>
           <Button
             type="button"
-            className="w-full"
+            variant="outline"
+            className="w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
             onClick={handleRemove}
             data-testid="product-remove-button"
           >

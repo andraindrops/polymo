@@ -36,7 +36,7 @@ export async function create({
   data: productSchema.createSchema;
 }) {
   const product = await db.product.create({
-    data: { ...data, teamId, userId },
+    data: { ...data, body: "", spec: "", teamId, userId },
   });
 
   const id = product.id;

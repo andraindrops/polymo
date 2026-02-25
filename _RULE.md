@@ -56,6 +56,7 @@ if (value == null) {
 if (!value) {
   return value;
 }
+```
 
 #### Elements in tsx
 
@@ -80,12 +81,16 @@ if (!value) {
 ###### Use Spacing
 
 ✅
+```tsx
 - space-*
 - p*
 - gap-*
+```
 
 ❌
+```tsx
 - m*
+```
 
 ###### Spacing between elements
 
@@ -123,6 +128,7 @@ Do not use space between A element and B element in tsx.
 
 #### Organization
 
+```
 [define]
 [:BLANK_LINE:]
 [action]
@@ -130,6 +136,7 @@ Do not use space between A element and B element in tsx.
 [render]
 [:BLANK_LINE:]
 [expect]
+```
 
 #### Value
 

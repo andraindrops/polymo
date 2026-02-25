@@ -17,7 +17,8 @@
       "!src/components/ui",
       "!playwright",
       "!playwright-report",
-      "!boilerplate/src"
+      "!boilerplate/src",
+      "!public/boilerplate"
     ]
   },
   "formatter": {

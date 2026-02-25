@@ -1,13 +1,13 @@
 import { auth } from "@clerk/nextjs/server";
 
 export async function getTeamId() {
-  const { userId, orgId: teamId } = await auth();
+  const { userId } = await auth();
 
-  if (userId == null || teamId == null) {
+  if (userId == null) {
     throw new Error("Unauthorized");
   }
 
-  return teamId;
+  return userId;
 }
 
 export async function getUserId() {

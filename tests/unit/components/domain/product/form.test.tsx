@@ -7,14 +7,14 @@ import ProductForm from "@/components/domain/product/form";
 const mockUpdate = vi.fn().mockResolvedValue({
   id: "product-id",
   name: "Updated Test Product",
-  body: "Test Body",
-  spec: "Test Spec",
+  body: "",
+  spec: "",
 });
 const mockRemove = vi.fn().mockResolvedValue({
   id: "product-id",
   name: "Test Product",
-  body: "Test Body",
-  spec: "Test Spec",
+  body: "",
+  spec: "",
 });
 
 vi.mock("@/actions/domain/product", () => ({
@@ -22,20 +22,12 @@ vi.mock("@/actions/domain/product", () => ({
   remove: (...args: unknown[]) => mockRemove(...args),
 }));
 
-const mockPush = vi.fn();
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: mockPush,
-    refresh: vi.fn(),
-  }),
-}));
-
 describe("ProductForm", () => {
   const defaultProduct = {
     id: "product-id",
     name: "Test Product",
-    body: "Test Body",
-    spec: "Test Spec",
+    body: "",
+    spec: "",
   };
 
   beforeEach(() => {
@@ -72,14 +64,8 @@ describe("ProductForm", () => {
     render(<ProductForm product={product} />);
 
     const inputName = screen.getByLabelText("Name");
-    const inputBody = screen.getByLabelText("Body");
-    const inputSpec = screen.getByLabelText("Spec");
     await user.clear(inputName);
     await user.type(inputName, "Updated Test Product");
-    await user.clear(inputBody);
-    await user.type(inputBody, "Updated Test Body");
-    await user.clear(inputSpec);
-    await user.type(inputSpec, "Updated Test Spec");
     await user.click(screen.getByRole("button", { name: "Submit" }));
 
     await waitFor(() => {
@@ -87,8 +73,6 @@ describe("ProductForm", () => {
         id: "product-id",
         data: {
           name: "Updated Test Product",
-          body: "Updated Test Body",
-          spec: "Updated Test Spec",
         },
       });
     });
@@ -104,9 +88,6 @@ describe("ProductForm", () => {
 
     await waitFor(() => {
       expect(mockRemove).toHaveBeenCalledWith({ id: "product-id" });
-    });
-    await waitFor(() => {
-      expect(mockPush).toHaveBeenCalledWith("/products");
     });
   });
 

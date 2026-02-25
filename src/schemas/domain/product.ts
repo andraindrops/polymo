@@ -9,14 +9,10 @@ export const entityZodSchema = z.object({
 
 export const createZodSchema = z.object({
   name: z.string().min(1),
-  body: z.string().min(1),
-  spec: z.string().min(1),
 });
 
 export const updateZodSchema = z.object({
   name: z.string().min(1),
-  body: z.string().min(1),
-  spec: z.string().min(1),
 });
 
 export type entitySchema = z.infer<typeof entityZodSchema>;
