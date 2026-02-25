@@ -35,9 +35,8 @@ const FAQ_ITEMS = [
 ];
 
 const PLAN_FEATURES = [
-  "100 monthly credits",
   "Unlimited apps",
-  "Anytime refundable subscription",
+  "Refund requests for the current month for any reason",
 ];
 
 export default async function Page() {
