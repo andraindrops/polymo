@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { Check } from "lucide-react";
+import { Check, Mail } from "lucide-react";
 
 import * as subscriptionService from "@/services/domain/subscription";
 
@@ -54,6 +54,7 @@ export default async function Page() {
             <HiSection />
             <PricingSection />
             <FaqSection />
+            <ContactSection />
           </div>
         </div>
       </>
@@ -74,6 +75,7 @@ export default async function Page() {
             <HiSection />
             <PricingSection />
             <FaqSection />
+            <ContactSection />
           </div>
         </div>
       </>
@@ -118,6 +120,21 @@ function PricingSection() {
           </Button>
         </CardContent>
       </Card>
+    </section>
+  );
+}
+
+function ContactSection() {
+  return (
+    <section className="space-y-4">
+      <h2 className="font-bold text-2xl">Contact</h2>
+      <a
+        href="mailto:dev@andraindrops.dev"
+        className="flex items-center gap-2 text-white/80 hover:text-white"
+      >
+        <Mail className="size-4 shrink-0" />
+        dev@andraindrops.dev
+      </a>
     </section>
   );
 }
