@@ -10,7 +10,6 @@ import {
 import outdent from "outdent";
 import { z } from "zod";
 
-import type { FlyFile } from "@/lib/container";
 import * as objectStorage from "@/lib/objectStorage";
 
 import * as productStudioPromptService from "@/services/domain/productStudioPrompt";
@@ -91,47 +90,8 @@ export function buildTools({ productId }: { productId: string }) {
     },
   });
 
-  // const createFileTool = tool({
-  //   description: "Create a file.",
-  //   inputSchema: z.object({
-  //     filePath: z
-  //       .string()
-  //       .describe("Relative path to the file from product root"),
-  //     newText: z.string().describe("text"),
-  //   }),
-  //   execute: async ({ filePath, newText }) => {
-  //     const start = Date.now();
-  //     console.log(`createFile START: ${filePath} at ${start}`);
-  //     const result = await createFile({ productId, filePath, newText });
-  //     console.log(
-  //       `createFile END: ${filePath} at ${Date.now()} (${Date.now() - start}ms)`,
-  //     );
-  //     return result;
-  //   },
-  // });
-
-  // const deleteFileTool = tool({
-  //   description: "Delete a file.",
-  //   inputSchema: z.object({
-  //     filePath: z
-  //       .string()
-  //       .describe("Relative path to the file from product root"),
-  //   }),
-  //   execute: async ({ filePath }) => {
-  //     const start = Date.now();
-  //     console.log(`deleteFile START: ${filePath} at ${start}`);
-  //     const result = await deleteFile({ productId, filePath });
-  //     console.log(
-  //       `deleteFile END: ${filePath} at ${Date.now()} (${Date.now() - start}ms)`,
-  //     );
-  //     return result;
-  //   },
-  // });
-
   return {
     updateFile: updateFileTool,
-    // createFile: createFileTool,
-    // deleteFile: deleteFileTool,
   };
 }
 
@@ -201,26 +161,6 @@ export async function removeProductFiles({
     PRODUCT_FILE_NAME,
   );
   await objectStorage.deleteObject({ key });
-}
-
-export async function collectProductFiles(
-  productId: string,
-): Promise<FlyFile[]> {
-  const key = objectStorage.objectKey(
-    R2_PRODUCTS_PREFIX,
-    productId,
-    PRODUCT_FILE_NAME,
-  );
-  const content = await objectStorage.getObject({ key });
-
-  if (!content) return [];
-
-  return [
-    {
-      guest_path: `/app/${PRODUCT_FILE_NAME}`,
-      raw_value: Buffer.from(content).toString("base64"),
-    },
-  ];
 }
 
 function validateFilePath({

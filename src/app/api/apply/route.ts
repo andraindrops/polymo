@@ -1,5 +1,7 @@
 import type { UIMessage } from "ai";
 
+import * as productPolicy from "@/policies/domain/product";
+
 import * as authService from "@/services/shared/auth";
 
 import { chat } from "@/services/domain/product/studio";
@@ -22,6 +24,8 @@ export async function POST(req: Request) {
 
   const url = new URL(req.url);
   const productId = url.searchParams.get("productId") ?? "example";
+
+  await productPolicy.assertAccessible({ scope: { teamId }, id: productId });
 
   const { messages }: { messages: UIMessage[] } = await req.json();
 

@@ -52,16 +52,6 @@ export async function update({
   return result;
 }
 
-// export async function deploy({ id }: { id: string }) {
-//   const teamId = await authService.getTeamId();
-
-//   const result = await productService.deploy({ id, teamId });
-
-//   revalidatePath(`/products/${id}`);
-
-//   return result;
-// }
-
 export async function remove({ id }: { id: string }) {
   const teamId = await authService.getTeamId();
 

@@ -11,7 +11,6 @@
     "test:coverage": "dotenv -e .env.test -- prisma db push --force-reset && dotenv -e .env.test -- vitest run --coverage",
     "e2e-test": "dotenv -e .env.test -- prisma db push --force-reset && dotenv -e .env.test -- tsx tests/e2e/seed.ts && dotenv -e .env.test -- playwright test",
     "format": "biome format --write",
-    "llm:warm-cache": "dotenv -e .env -- tsx scripts/llm/warm-cache.ts",
     "prepare": "husky",
     "postinstall": "prisma generate"
   },

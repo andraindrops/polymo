@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 
+import * as productPolicy from "@/policies/domain/product";
+
+import * as authService from "@/services/shared/auth";
+
 import { getFile } from "@/services/domain/product/studio";
 
 export async function GET(
@@ -9,6 +13,9 @@ export async function GET(
   const { id } = await params;
 
   try {
+    const teamId = await authService.getTeamId();
+    await productPolicy.assertAccessible({ scope: { teamId }, id });
+
     const html = await getFile({ productId: id, filePath: "index.html" });
     return new NextResponse(html, {
       headers: { "Content-Type": "text/html; charset=utf-8" },
