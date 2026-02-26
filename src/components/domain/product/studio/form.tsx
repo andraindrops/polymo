@@ -104,16 +104,14 @@ function PreviewFrame({
 
 export default function Page({
   productId: productIdFromProps,
-  initialMessage,
   isAuthenticated = true,
   hasSubscription = true,
 }: {
   productId?: string;
-  initialMessage?: string;
   isAuthenticated?: boolean;
   hasSubscription?: boolean;
 }) {
-  const [input, setInput] = useState(initialMessage ?? "");
+  const [input, setInput] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
   const clerk = useClerk();
@@ -130,12 +128,18 @@ export default function Page({
   const initialMessageSentRef = useRef(false);
 
   useEffect(() => {
-    if (initialMessage == null || initialMessageSentRef.current) return;
+    if (isDefaultMode) return;
+    if (initialMessageSentRef.current) return;
+
+    const pendingMessage = localStorage.getItem(PENDING_MESSAGE_KEY);
+    if (pendingMessage == null) return;
+
     initialMessageSentRef.current = true;
-    setInput(initialMessage);
+    localStorage.removeItem(PENDING_MESSAGE_KEY);
+    setInput(pendingMessage);
     setIsCreating(false);
-    sendMessage({ text: initialMessage });
-  }, [initialMessage, sendMessage]);
+    sendMessage({ text: pendingMessage });
+  }, [isDefaultMode, sendMessage]);
 
   const pendingMessageHandledRef = useRef(false);
 
@@ -147,16 +151,13 @@ export default function Page({
     if (pendingMessage == null) return;
 
     pendingMessageHandledRef.current = true;
-    localStorage.removeItem(PENDING_MESSAGE_KEY);
     setInput(pendingMessage);
     setIsCreating(true);
 
     productAction
       .create({ data: { name: "Untitled" } })
       .then((product) => {
-        router.push(
-          `/products/${product.id}/studio?message=${encodeURIComponent(pendingMessage)}`,
-        );
+        router.push(`/products/${product.id}/studio`);
       })
       .catch(() => {
         setIsCreating(false);
@@ -266,9 +267,8 @@ export default function Page({
                 const product = await productAction.create({
                   data: { name: "Untitled" },
                 });
-                router.push(
-                  `/products/${product.id}/studio?message=${encodeURIComponent(text)}`,
-                );
+                localStorage.setItem(PENDING_MESSAGE_KEY, text);
+                router.push(`/products/${product.id}/studio`);
               } catch {
                 setIsCreating(false);
               }

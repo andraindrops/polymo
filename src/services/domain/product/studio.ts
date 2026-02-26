@@ -19,7 +19,7 @@ const BOILERPLATE_INDEX_HTML = path.join(
   "boilerplate/src/index.html",
 );
 
-const R2_PRODUCTS_PREFIX = "products";
+const PRODUCTS_PREFIX = "products";
 const PRODUCT_FILE_NAME = "index.html";
 
 export type FileOperationResult = { success: boolean; message: string };
@@ -142,11 +142,7 @@ export async function createProductFiles({
   id: string;
 }): Promise<void> {
   const content = await fsReadFile(BOILERPLATE_INDEX_HTML);
-  const key = objectStorage.objectKey(
-    R2_PRODUCTS_PREFIX,
-    id,
-    PRODUCT_FILE_NAME,
-  );
+  const key = objectStorage.objectKey(PRODUCTS_PREFIX, id, PRODUCT_FILE_NAME);
   await objectStorage.putObject({ key, body: content });
 }
 
@@ -155,11 +151,7 @@ export async function removeProductFiles({
 }: {
   id: string;
 }): Promise<void> {
-  const key = objectStorage.objectKey(
-    R2_PRODUCTS_PREFIX,
-    id,
-    PRODUCT_FILE_NAME,
-  );
+  const key = objectStorage.objectKey(PRODUCTS_PREFIX, id, PRODUCT_FILE_NAME);
   await objectStorage.deleteObject({ key });
 }
 
@@ -181,11 +173,7 @@ function validateFilePath({
     };
   }
 
-  const key = objectStorage.objectKey(
-    R2_PRODUCTS_PREFIX,
-    productId,
-    normalized,
-  );
+  const key = objectStorage.objectKey(PRODUCTS_PREFIX, productId, normalized);
   return { valid: true, key };
 }
 
@@ -269,7 +257,7 @@ export async function getFile({
   productId: string;
   filePath: string;
 }): Promise<string> {
-  const key = objectStorage.objectKey(R2_PRODUCTS_PREFIX, productId, filePath);
+  const key = objectStorage.objectKey(PRODUCTS_PREFIX, productId, filePath);
   const content = await objectStorage.getObject({ key });
   if (!content) throw new Error(`File not found: ${filePath}`);
   return content;

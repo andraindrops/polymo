@@ -6,13 +6,10 @@ import SubscriptionGuard from "@/components/shared/subscriptionGuard";
 
 export default async function Page({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ message?: string }>;
 }) {
   const { id } = await params;
-  const { message } = await searchParams;
 
   const product = await productAction.findById({
     id,
@@ -21,7 +18,7 @@ export default async function Page({
   return (
     <div className="mx-auto max-w-md px-8">
       <SubscriptionGuard />
-      <StudioForm productId={product.id} initialMessage={message} />
+      <StudioForm productId={product.id} />
     </div>
   );
 }
