@@ -166,7 +166,7 @@ export default function Page({
 
   const prevStatusRef = useRef<string | undefined>(undefined);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const [frames, setFrames] = useState<FrameData[]>([
     {
@@ -240,7 +240,9 @@ export default function Page({
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll on message/status change
   useEffect(() => {
     if (messages.length === 0) return;
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = messagesContainerRef.current;
+    if (container == null) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [messages, status]);
 
   const previewSrc =
@@ -295,7 +297,10 @@ export default function Page({
         </form>
       </div>
       <div className="h-20 bg-gray-100 px-8 py-4">
-        <div className="h-full space-y-1 overflow-y-auto text-justify text-xs">
+        <div
+          ref={messagesContainerRef}
+          className="h-full space-y-1 overflow-y-auto text-justify text-xs"
+        >
           <div>
             Hi, I'm Polymo. I can build a web app for you with simple and stable
             the boilerplate code. What would you like to create?
@@ -324,7 +329,7 @@ export default function Page({
               </div>
             </div>
           ))}
-          <div ref={messagesEndRef} />
+          <div />
         </div>
       </div>
       <div className="px-8">
