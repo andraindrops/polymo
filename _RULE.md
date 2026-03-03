@@ -201,7 +201,7 @@ value: "Tenant 2 - Test Example 2"
 - throws error when example belongs to different team
 
 ###### create
-- creates a new example
+- creates an example
 - creates example with correct team association
 
 ###### update
@@ -231,6 +231,18 @@ value: "Tenant 2 - Test Example 2"
 - allows access when example belongs to the team
 - throws error when example does not exist
 - throws error when example belongs to different team
+
+##### Condition
+
+```
+describe("🙆‍♀️ example does [   ] exist", () => {
+  it("does [   ] create a exampleRelated", ...);
+});
+
+describe("🙅‍♀️ example does [not] exist", () => {
+  it("does [not] create a exampleRelated", ...);
+});
+```
 
 ----------------------------------------------------------------
 

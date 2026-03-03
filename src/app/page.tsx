@@ -20,7 +20,7 @@ const FAQ_ITEMS = [
   {
     question: "What is Polymo good at?",
     answer:
-      "Polymo is great at building simple and stable demo apps using boilerplates and guardrails. For further development, it is designed to be used with AI Coding Agents from other companies. Unlike tools like v0 or Lovable, it is not intended for long-term product dev or ops.",
+      "Polymo is great at building simple and stable prototype apps using boilerplates and guardrails. For further development, it is designed to be used with AI Coding Agents from other companies. Unlike tools like v0 or Lovable, it is not intended for long-term product dev or ops.",
   },
   {
     question: "What is a single-page HTML web app?",
@@ -87,8 +87,8 @@ function HiSection() {
     <section className="space-y-4">
       <h2 className="font-bold text-2xl">Hi</h2>
       <p className="text-justify text-white/80 leading-relaxed">
-        Polymo is a vibe-coding tool - building a single-page HTML web app with
-        simple and stable the boilerplate code.
+        Polymo - Build single-page HTML web apps with a simple and stable
+        boilerplate.
       </p>
     </section>
   );
