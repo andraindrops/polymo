@@ -18,7 +18,10 @@ export async function GET(
 
     const html = await getFile({ productId: id, filePath: "index.html" });
     return new NextResponse(html, {
-      headers: { "Content-Type": "text/html; charset=utf-8" },
+      headers: {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "no-store",
+      },
     });
   } catch {
     return new NextResponse("Not Found", { status: 404 });

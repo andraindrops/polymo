@@ -85,7 +85,7 @@ function PreviewFrame({
       <div className="relative mx-4 overflow-hidden rounded-b-xl border bg-white">
         <div className="aspect-square w-full p-2">
           <iframe
-            src={frame.loaded ? previewSrc : "about:blank"}
+            src={frame.loaded ? `${previewSrc}?v=${frame.id}` : "about:blank"}
             className="h-full w-full"
             title="Product Preview"
           />
