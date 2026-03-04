@@ -72,6 +72,7 @@ export default function Component() {
     <>
       <button
         type="button"
+        data-testid="product-studio-create-button"
         onClick={handleCreate}
         disabled={isPending}
         className="cursor-pointer opacity-80 hover:opacity-100 disabled:cursor-wait disabled:opacity-40"

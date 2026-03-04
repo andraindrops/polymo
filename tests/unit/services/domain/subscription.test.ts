@@ -5,6 +5,12 @@ import * as subscriptionService from "@/services/domain/subscription";
 import { cleanupDatabase } from "@/tests/_helpers/cleanup";
 import { createTestSubscription } from "@/tests/_helpers/fixtures/subscription";
 
+const userId = process.env.E2E_TEST_USER_ID;
+
+if (userId == null) {
+  throw new Error("E2E_TEST_USER_ID must be set in environment variables");
+}
+
 describe("subscriptionService", () => {
   beforeEach(async () => {
     await cleanupDatabase();
@@ -12,14 +18,14 @@ describe("subscriptionService", () => {
 
   describe("findActiveByUserId", () => {
     it("returns subscription when    active subscription exists", async () => {
-      await createTestSubscription({ userId: "user-1", status: "active" });
+      await createTestSubscription({ userId, status: "active" });
 
       const result = await subscriptionService.findActiveByUserId({
-        userId: "user-1",
+        userId,
       });
 
       expect(result).not.toBeNull();
-      expect(result?.userId).toBe("user-1");
+      expect(result?.userId).toBe(userId);
     });
 
     it("returns null         when no active subscription exists", async () => {
@@ -33,7 +39,7 @@ describe("subscriptionService", () => {
 
   it("creates a subscription", async () => {
     const result = await subscriptionService.upsert({
-      userId: "user-1",
+      userId,
       stripeCustomerId: "cus_123",
       stripeSubscriptionId: "sub_123",
       status: "active",
@@ -43,7 +49,7 @@ describe("subscriptionService", () => {
     });
 
     expect(result).toMatchObject({
-      userId: "user-1",
+      userId,
       stripeCustomerId: "cus_123",
       stripeSubscriptionId: "sub_123",
       status: "active",

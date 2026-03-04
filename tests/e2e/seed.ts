@@ -2,6 +2,7 @@ import db from "@/lib/db";
 
 import { cleanupDatabase } from "@/tests/_helpers/cleanup";
 import { createTestExample } from "@/tests/_helpers/fixtures/example";
+import { createTestSubscription } from "@/tests/_helpers/fixtures/subscription";
 
 export async function main() {
   const teamId = process.env.E2E_TEST_TEAM_ID;
@@ -16,6 +17,7 @@ export async function main() {
   await cleanupDatabase();
 
   await createTestExample({ id: teamId, userId }, { name: "Test Example" });
+  await createTestSubscription({ userId, status: "active" });
 }
 
 export async function disconnectDB() {

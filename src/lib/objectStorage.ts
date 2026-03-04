@@ -19,7 +19,7 @@ export async function putObject({
 }
 
 export async function getObject({ key }: { key: string }) {
-  const result = await get(key, { access: "private" });
+  const result = await get(key, { access: "private", useCache: false });
 
   if (result?.statusCode !== 200) return undefined;
 

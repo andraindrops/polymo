@@ -281,11 +281,13 @@ export default function Page({
         >
           <div className="grid grid-cols-[1fr_auto] gap-2">
             <Input
+              data-testid="product-studio-input"
               value={input}
               placeholder="Can you build a example web app?"
               onChange={(e) => setInput(e.target.value)}
             />
             <Button
+              data-testid="product-studio-submit-button"
               type="submit"
               disabled={isLoading}
               size="icon"
