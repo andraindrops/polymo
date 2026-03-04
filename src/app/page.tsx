@@ -20,7 +20,7 @@ const FAQ_ITEMS = [
   {
     question: "What is Polymo good at?",
     answer:
-      "Polymo is optimized for building simple and stable prototype apps using boilerplates and guardrails. For further development, it is designed to integrate with AI coding agents from other companies. Unlike tools like v0 or Lovable, it is not intended for long-term product development or operations.",
+      "It allows you to create web app prototypes quickly, just like using a photo booth. Polymo is designed to build simple and stable prototypes using templates and clear rules. If you want to develop your project further, you can use it with other AI coding tools. It is made for testing quick ideas, not for long-term product dev and ops.",
   },
   {
     question: "What is a single-page HTML web app?",
