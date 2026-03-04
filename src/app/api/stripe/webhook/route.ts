@@ -6,7 +6,7 @@ import * as subscriptionService from "@/services/domain/subscription";
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2026-01-28.clover",
+  apiVersion: "2026-02-25.clover",
 });
 
 function extractSubscriptionDates(sub: Stripe.Subscription) {
