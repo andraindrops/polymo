@@ -20,7 +20,7 @@ const FAQ_ITEMS = [
   {
     question: "What is Polymo good at?",
     answer:
-      "It allows you to create web app prototypes quickly, just like using a photo booth. Polymo is designed to build simple and stable prototypes using templates and clear rules. If you want to develop your project further, you can use it with other AI coding tools. It is made for testing quick ideas, not for long-term product dev and ops.",
+      "It allows you to create web app prototypes quickly, just like using a photo booth. Polymo is designed to build simple and stable prototypes using templates and clear rules. If you want to develop your project further, you can use it with other AI coding tools later. It is made for testing quick ideas, not for long-term product dev and ops.",
   },
   {
     question: "What is a single-page HTML web app?",
