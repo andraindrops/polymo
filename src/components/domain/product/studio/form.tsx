@@ -22,6 +22,54 @@ interface FrameData {
   pending: boolean;
 }
 
+interface ChatToolPart {
+  type: string;
+  toolCallId: string;
+  input?: {
+    filePath?: string;
+  };
+}
+
+function getLoadingLabel({
+  isCreating,
+  status,
+  messages,
+}: {
+  isCreating: boolean;
+  status: string;
+  messages: {
+    role: string;
+    parts: { type: string }[];
+  }[];
+}) {
+  if (isCreating) {
+    return "Creating product...";
+  }
+
+  if (status === "submitted") {
+    return "Planning app...";
+  }
+
+  if (status !== "streaming") {
+    return "";
+  }
+
+  const latestMessage = messages.at(-1);
+  if (latestMessage?.role !== "assistant") {
+    return "Generating app...";
+  }
+
+  const toolPart = latestMessage.parts.find((part) =>
+    part.type.startsWith("tool-"),
+  ) as ChatToolPart | undefined;
+
+  if (toolPart?.input?.filePath != null) {
+    return `Writing ${toolPart.input.filePath}...`;
+  }
+
+  return "Generating app...";
+}
+
 function PreviewFrame({
   previewSrc,
   frame,
@@ -191,6 +239,29 @@ export default function Page({
 
   const isLoading =
     isCreating || status === "submitted" || status === "streaming";
+  const [isLoadingMessageInverted, setIsLoadingMessageInverted] =
+    useState(false);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsLoadingMessageInverted(false);
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setIsLoadingMessageInverted((current) => !current);
+    }, 800);
+    return () => window.clearInterval(timer);
+  }, [isLoading]);
+
+  const loadingLabel = getLoadingLabel({
+    isCreating,
+    status,
+    messages: messages as {
+      role: string;
+      parts: { type: string }[];
+    }[],
+  });
 
   useEffect(() => {
     if (status === "submitted") {
@@ -331,6 +402,17 @@ export default function Page({
               </div>
             </div>
           ))}
+          {loadingLabel !== "" ? (
+            <div
+              className={
+                isLoadingMessageInverted
+                  ? "px-2 py-1 text-foreground opacity-100 transition-[color,opacity] duration-800 ease-in-out"
+                  : "px-2 py-1 text-muted-foreground opacity-40 transition-[color,opacity] duration-800 ease-in-out"
+              }
+            >
+              {loadingLabel}
+            </div>
+          ) : null}
           <div />
         </div>
       </div>

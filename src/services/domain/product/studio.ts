@@ -43,12 +43,15 @@ export async function buildSystemPrompt({
     RULES:
       - The entire application lives in a single index.html file.
       - Build code as simple, stable, runnable, and fully satisfies the user prompt.
-      - IMPORTANT: Always batch all changes into a single updateFile call with multiple replacements. Never call updateFile more than once per file.
+      - IMPORTANT: Always rewrite index.html with a single setFile call.
+      - IMPORTANT: After the tool succeeds, reply with exactly: Done 🎉
 
     STEPS:
       - read the CODE.
       - understand the gap between the CODE and the user prompt.
-      - generate the code to fix the gap.
+      - generate the full updated index.html.
+      - call setFile once.
+      - reply exactly with Done 🎉
 
     CODES:
       index.html:
@@ -57,41 +60,33 @@ export async function buildSystemPrompt({
 }
 
 export function buildTools({ productId }: { productId: string }) {
-  const updateFileTool = tool({
-    description:
-      "Update a file by applying one or more replacements. All replacements are applied in order within a single read-write cycle.",
+  const setFileTool = tool({
+    description: "Rewrite a file with the full new contents in a single write.",
     inputSchema: z.object({
       filePath: z
         .string()
         .describe("Relative path to the file from product root"),
-      replacements: z
-        .array(
-          z.object({
-            oldText: z.string().describe("search text"),
-            newText: z.string().describe("replacement text"),
-          }),
-        )
-        .describe("Array of replacements to apply in order"),
+      content: z.string().describe("Full new file contents"),
     }),
-    execute: async ({ filePath, replacements }) => {
+    execute: async ({ filePath, content }) => {
       const start = Date.now();
       console.log(
-        `updateFile START: ${filePath} (${replacements.length} replacements) at ${start}`,
+        `setFile START: ${filePath} (${content.length} chars) at ${start}`,
       );
-      const result = await updateFile({
+      const result = await setFile({
         productId,
         filePath,
-        replacements,
+        content,
       });
       console.log(
-        `updateFile END: ${filePath} at ${Date.now()} (${Date.now() - start}ms)`,
+        `setFile END: ${filePath} at ${Date.now()} (${Date.now() - start}ms)`,
       );
       return result;
     },
   });
 
   return {
-    updateFile: updateFileTool,
+    setFile: setFileTool,
   };
 }
 
@@ -124,7 +119,7 @@ export async function chat({
       ...(await convertToModelMessages(messages)),
     ],
     tools,
-    stopWhen: stepCountIs(100),
+    stopWhen: stepCountIs(5),
     onFinish: async ({ usage }) => {
       await productStudioPromptService.recordTokenUsage({
         userId,
@@ -233,6 +228,23 @@ export async function updateFile({
     success: true,
     message: `Applied ${replacements.length} replacement(s) to ${filePath}`,
   };
+}
+
+export async function setFile({
+  productId,
+  filePath,
+  content,
+}: {
+  productId: string;
+  filePath: string;
+  content: string;
+}): Promise<FileOperationResult> {
+  const validation = validateFilePath({ productId, filePath });
+  if (!validation.valid) return validation.error;
+
+  await objectStorage.putObject({ key: validation.key, body: content });
+
+  return { success: true, message: `Rewrote ${filePath}` };
 }
 
 export async function deleteFile({
