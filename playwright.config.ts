@@ -11,18 +11,12 @@ export default defineConfig({
   },
   projects: [
     {
-      name: "global setup",
-      testMatch: /global\.setup\.ts/,
-    },
-    {
       name: "tests",
       testMatch: /\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
         viewport: { width: 1920, height: 1080 },
-        storageState: "playwright/.clerk/user.json",
       },
-      dependencies: ["global setup"],
     },
   ],
   webServer: {

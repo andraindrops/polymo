@@ -1,7 +1,6 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { useClerk } from "@clerk/nextjs";
 import { DefaultChatTransport, getToolName } from "ai";
 import { Download, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -152,17 +151,12 @@ function PreviewFrame({
 
 export default function Page({
   productId: productIdFromProps,
-  isAuthenticated = true,
-  hasSubscription = true,
 }: {
   productId?: string;
-  isAuthenticated?: boolean;
-  hasSubscription?: boolean;
 }) {
   const [input, setInput] = useState("");
   const [isCreating, setIsCreating] = useState(false);
 
-  const clerk = useClerk();
   const router = useRouter();
   const isDefaultMode = productIdFromProps == null;
   const productId = productIdFromProps ?? "";
@@ -192,7 +186,7 @@ export default function Page({
   const pendingMessageHandledRef = useRef(false);
 
   useEffect(() => {
-    if (!isAuthenticated || !hasSubscription || !isDefaultMode) return;
+    if (!isDefaultMode) return;
     if (pendingMessageHandledRef.current) return;
 
     const pendingMessage = localStorage.getItem(PENDING_MESSAGE_KEY);
@@ -210,7 +204,7 @@ export default function Page({
       .catch(() => {
         setIsCreating(false);
       });
-  }, [isAuthenticated, hasSubscription, isDefaultMode, router]);
+  }, [isDefaultMode, router]);
 
   const prevStatusRef = useRef<string | undefined>(undefined);
 
@@ -329,11 +323,6 @@ export default function Page({
             e.preventDefault();
             const text = input.trim();
             if (text === "" || isLoading) return;
-            if (isDefaultMode && !isAuthenticated) {
-              localStorage.setItem(PENDING_MESSAGE_KEY, text);
-              clerk.redirectToSignUp({ signUpFallbackRedirectUrl: "/" });
-              return;
-            }
             if (isDefaultMode) {
               setIsCreating(true);
               try {

@@ -2,8 +2,6 @@ import * as exampleAction from "@/actions/domain/example";
 
 import ExampleForm from "@/components/domain/example/form";
 
-import SubscriptionGuard from "@/components/shared/subscriptionGuard";
-
 export default async function Page({
   params,
 }: {
@@ -17,7 +15,6 @@ export default async function Page({
 
   return (
     <div className="mx-auto max-w-md px-8">
-      <SubscriptionGuard />
       <ExampleForm example={example} />
     </div>
   );

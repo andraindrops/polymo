@@ -1,21 +1,10 @@
-import { auth } from "@clerk/nextjs/server";
+export const fixedTeamId = "polymo-team-id";
+export const fixedUserId = "polymo-user-id";
 
 export async function getTeamId() {
-  const { userId } = await auth();
-
-  if (userId == null) {
-    throw new Error("Unauthorized");
-  }
-
-  return userId;
+  return fixedTeamId;
 }
 
 export async function getUserId() {
-  const { userId } = await auth();
-
-  if (userId == null) {
-    throw new Error("Unauthorized");
-  }
-
-  return userId;
+  return fixedUserId;
 }

@@ -1,23 +1,17 @@
 import db from "@/lib/db";
 
+import { fixedTeamId, fixedUserId } from "@/services/shared/auth";
+
 import { cleanupDatabase } from "@/tests/_helpers/cleanup";
 import { createTestExample } from "@/tests/_helpers/fixtures/example";
-import { createTestSubscription } from "@/tests/_helpers/fixtures/subscription";
 
 export async function main() {
-  const teamId = process.env.E2E_TEST_TEAM_ID;
-  const userId = process.env.E2E_TEST_USER_ID;
-
-  if (teamId == null || userId == null) {
-    throw new Error(
-      "E2E_TEST_TEAM_ID and E2E_TEST_USER_ID must be set in environment variables",
-    );
-  }
-
   await cleanupDatabase();
 
-  await createTestExample({ id: teamId, userId }, { name: "Test Example" });
-  await createTestSubscription({ userId, status: "active" });
+  await createTestExample(
+    { id: fixedTeamId, teamId: fixedTeamId, userId: fixedUserId },
+    { name: "Test Example" },
+  );
 }
 
 export async function disconnectDB() {
